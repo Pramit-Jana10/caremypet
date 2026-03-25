@@ -29,9 +29,24 @@ export function clearApiCache() {
   _cache.clear();
 }
 
+function resolveApiBaseUrl() {
+  const configured = process.env.NEXT_PUBLIC_API_BASE_URL?.trim();
+  if (configured) return configured;
+
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname;
+    const isLocalHost = host === "localhost" || host === "127.0.0.1";
+
+    // In deployed web apps, call same-origin /api unless explicitly configured.
+    if (!isLocalHost) return "/api";
+  }
+
+  // Local fallback for frontend + backend running on separate localhost ports.
+  return "http://localhost:5000/api";
+}
+
 export const api = axios.create({
-  // Flask backend default; can be overridden via NEXT_PUBLIC_API_BASE_URL.
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api",
+  baseURL: resolveApiBaseUrl(),
   timeout: 20000,
   headers: {
     "Content-Type": "application/json"

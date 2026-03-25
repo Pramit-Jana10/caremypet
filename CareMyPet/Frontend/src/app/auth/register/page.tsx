@@ -47,7 +47,11 @@ export default function RegisterPage() {
       setOtpToken(null);
       toast.success("OTP sent to your email");
     } catch (e: any) {
-      toast.error(e?.response?.data?.message || "Failed to send OTP");
+      const message =
+        e?.response?.data?.message ||
+        (e?.request ? "Cannot reach server. Check API URL and deployment CORS settings." : null) ||
+        "Failed to send OTP";
+      toast.error(message);
     } finally {
       setSendingOtp(false);
     }
