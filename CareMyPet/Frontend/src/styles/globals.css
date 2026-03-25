@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  --brand-50: 242 247 255;
+  --brand-100: 227 237 253;
+  --brand-200: 198 216 249;
+  --brand-300: 161 190 242;
+  --brand-400: 118 157 230;
+  --brand-500: 77 122 212;
+  --brand-600: 59 96 176;
+  --brand-700: 46 76 141;
+  --brand-800: 39 64 117;
+  --brand-900: 33 54 96;
+
+  --ink-50: 246 247 251;
+  --ink-100: 233 235 245;
+  --ink-200: 207 211 234;
+  --ink-300: 170 178 214;
+  --ink-400: 125 139 193;
+  --ink-500: 92 108 171;
+  --ink-600: 70 84 138;
+  --ink-700: 56 67 111;
+  --ink-800: 47 56 91;
+  --ink-900: 37 44 71;
+
+  --surface-base: 243 246 251;
+  --surface-card: 255 255 255;
+}
+
+.dark {
+  color-scheme: dark;
+  --ink-50: 18 25 41;
+  --ink-100: 28 37 58;
+  --ink-200: 41 53 78;
+  --ink-300: 66 82 112;
+  --ink-400: 102 121 157;
+  --ink-500: 145 164 196;
+  --ink-600: 185 200 226;
+  --ink-700: 212 223 243;
+  --ink-800: 230 238 252;
+  --ink-900: 242 247 255;
+
+  --surface-base: 11 18 33;
+  --surface-card: 18 27 46;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background-color: rgb(var(--surface-base));
+  @apply text-ink-900 antialiased;
+}
+
+.dark .bg-white {
+  background-color: rgb(var(--surface-card)) !important;
+}
+
+.dark .bg-white\/95 {
+  background-color: rgb(var(--surface-card) / 0.95) !important;
+}
+
+.dark .bg-white\/90 {
+  background-color: rgb(var(--surface-card) / 0.9) !important;
+}
+
+.dark .bg-white\/85 {
+  background-color: rgb(var(--surface-card) / 0.85) !important;
+}
+
+.dark .bg-white\/80 {
+  background-color: rgb(var(--surface-card) / 0.8) !important;
+}
+
+.dark .hover\:bg-white\/15:hover {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
+.dark .from-white {
+  --tw-gradient-from: rgb(var(--surface-card)) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(var(--surface-card) / 0) var(--tw-gradient-to-position) !important;
+}
+
+.dark .via-white {
+  --tw-gradient-to: rgb(var(--surface-card) / 0) var(--tw-gradient-to-position) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), rgb(var(--surface-card)) var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+
+.dark .to-white {
+  --tw-gradient-to: rgb(var(--surface-base)) var(--tw-gradient-to-position) !important;
+}
+
+.dark .from-brand-100 {
+  --tw-gradient-from: rgb(37 57 95) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(37 57 95 / 0) var(--tw-gradient-to-position) !important;
+}
+
+.dark .to-sky-100 {
+  --tw-gradient-to: rgb(22 35 60) var(--tw-gradient-to-position) !important;
+}
+
+.dark .bg-brand-100 {
+  background-color: rgb(48 75 128 / 0.35) !important;
+}
+
+.dark .text-brand-800 {
+  color: rgb(191 212 250) !important;
+}
+
+/* Emergency / red-orange gradient panel */
+.dark .from-red-50 {
+  --tw-gradient-from: rgb(45 20 22) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(45 20 22 / 0) var(--tw-gradient-to-position) !important;
+}
+.dark .to-orange-50 {
+  --tw-gradient-to: rgb(42 24 14) var(--tw-gradient-to-position) !important;
+}
+.dark .border-red-100 {
+  border-color: rgb(80 30 33 / 0.7) !important;
+}
+
+/* Brand/sky gradient panel (daily care, prescription) */
+.dark .from-brand-50 {
+  --tw-gradient-from: rgb(22 35 60) var(--tw-gradient-from-position) !important;
+  --tw-gradient-to: rgb(22 35 60 / 0) var(--tw-gradient-to-position) !important;
+}
+.dark .to-sky-50 {
+  --tw-gradient-to: rgb(14 28 52) var(--tw-gradient-to-position) !important;
+}
+.dark .border-brand-100 {
+  border-color: rgb(40 64 110 / 0.7) !important;
+}
+
+/* PersonalizedRecommendation chip inside care playbook */
+.dark .border-brand-200 {
+  border-color: rgb(48 75 128 / 0.8) !important;
+}
+
+/* Better tap targets on mobile */
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
