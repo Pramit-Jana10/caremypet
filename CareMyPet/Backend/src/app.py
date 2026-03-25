@@ -67,7 +67,8 @@ def _get_jwt_secret() -> str:
 
 
 def create_app() -> Flask:
-    load_dotenv(override=True)
+    # Keep real environment variables (Render/CI) authoritative over local .env.
+    load_dotenv(override=False)
 
     app = Flask(__name__)
     app.config["JSON_SORT_KEYS"] = False

@@ -35,10 +35,11 @@ def app(monkeypatch):
 
     monkeypatch.setattr("src.app.init_db", lambda app: None)
     monkeypatch.setattr("src.app.init_scheduler", lambda app: None)
+    monkeypatch.setattr("src.app.init_rate_limiter", lambda app: None)
     monkeypatch.setattr("src.app.seed_vets_if_empty", lambda: None)
     monkeypatch.setattr("src.app.seed_products_if_empty", lambda: None)
-    monkeypatch.setattr("src.services.otp_service.send_email", lambda *args, **kwargs: None)
-    monkeypatch.setattr("src.services.order_service.send_email", lambda *args, **kwargs: None)
+    monkeypatch.setattr("src.services.otp_service.send_email", lambda *args, **kwargs: True)
+    monkeypatch.setattr("src.services.order_service.send_email", lambda *args, **kwargs: True)
 
     monkeypatch.setenv("JWT_SECRET", "57e0bbf9fc7a6b45ee1414ff350108b7")
     monkeypatch.setenv("CORS_ALLOWED_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000,capacitor://localhost")

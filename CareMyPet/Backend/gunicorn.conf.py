@@ -7,8 +7,9 @@
 # Increase workers on multi-core hosts (rule of thumb: 2 × CPU_COUNT + 1).
 
 import multiprocessing
+import os
 
-bind = "0.0.0.0:5000"
+bind = f"0.0.0.0:{os.getenv('PORT', '5000')}"
 
 # Worker count – keep at 2 for single/dual core; scale up for more cores.
 workers = int(__import__("os").getenv("WEB_CONCURRENCY", max(2, multiprocessing.cpu_count())))

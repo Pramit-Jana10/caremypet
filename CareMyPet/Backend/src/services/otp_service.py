@@ -30,7 +30,7 @@ def generate_otp(email: str) -> str:
 
     code = "".join(random.choices(string.digits, k=6))
 
-    _otp_collection().insert_one(
+    insert_result = _otp_collection().insert_one(
         {
             "email": email,
             "otp": code,
@@ -66,7 +66,11 @@ def generate_otp(email: str) -> str:
         </p>
     </div>
     """
-    send_email(subject, body, [email])
+    sent = send_email(subject, body, [email])
+    if not sent:
+        # Avoid keeping a valid OTP in DB when delivery failed.
+        _otp_collection().delete_one({"_id": insert_result.inserted_id})
+        raise RuntimeError("Unable to send OTP email right now. Please try again later.")
 
     # Always log the OTP server-side to unblock local development
     # even when SMTP credentials are not working.
