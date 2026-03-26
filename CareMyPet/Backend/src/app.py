@@ -84,13 +84,14 @@ def create_app() -> Flask:
     Compress(app)
 
     CORS(
-        app,
-        resources={r"/api/*": {"origins": _get_allowed_origins()}},
-        supports_credentials=False,
-        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-        allow_headers=["Authorization", "Content-Type"],
+    app,
+    origins=_get_allowed_origins(),
+    supports_credentials=False,
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
     )
-
+    
+    
     init_db(app)
     init_jwt(app)
     init_cache(app)
