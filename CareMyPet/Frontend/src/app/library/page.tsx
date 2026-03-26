@@ -278,7 +278,9 @@ function LibraryInner() {
                           key={lesson.id}
                           className={
                             "flex items-start gap-3 rounded-xl px-3 py-2 text-sm " +
-                            (selectedLesson?.id === lesson.id ? "bg-brand-50" : "bg-ink-50")
+                            (selectedLesson?.id === lesson.id
+                              ? "bg-brand-50 dark:bg-brand-900/30"
+                              : "bg-ink-50 dark:bg-ink-800/70")
                           }
                         >
                           <button
@@ -300,11 +302,11 @@ function LibraryInner() {
                           </button>
                           <button
                             type="button"
-                            className="text-left"
+                            className="w-full rounded-lg px-1 py-1 text-left"
                             onClick={() => setSelectedLessonId(lesson.id)}
                           >
-                            <p className="font-medium text-ink-900">{lesson.title}</p>
-                            <p className="mt-1 text-xs text-ink-700">{lesson.description}</p>
+                            <p className="font-medium text-ink-900 dark:text-white">{lesson.title}</p>
+                            <p className="mt-1 text-xs text-ink-700 dark:text-ink-200">{lesson.description}</p>
                           </button>
                         </li>
                       );
