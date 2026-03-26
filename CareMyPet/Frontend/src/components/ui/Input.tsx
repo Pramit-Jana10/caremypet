@@ -17,7 +17,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(function Input(
   return (
     <div className={clsx("w-full", className)}>
       {label ? (
-        <label htmlFor={inputId} className="mb-1 block text-sm font-medium text-ink-800">
+        <label htmlFor={inputId} className="mb-1 block text-sm font-medium text-ink-800 dark:text-ink-200">
           {label}
         </label>
       ) : null}
@@ -27,10 +27,11 @@ export const Input = forwardRef<HTMLInputElement, Props>(function Input(
           id={inputId}
           className={clsx(
             "h-11 w-full rounded-xl border bg-white px-3 text-sm text-ink-900 shadow-sm",
-            "placeholder:text-ink-400",
+            "dark:bg-ink-800 dark:text-white dark:border-ink-600",
+            "placeholder:text-ink-400 dark:placeholder:text-ink-500",
             "focus:outline-none focus:ring-2 focus:ring-brand-500/40",
             rightAdornment ? "pr-11" : null,
-            error ? "border-red-400" : "border-ink-200"
+            error ? "border-red-400 dark:border-red-500" : "border-ink-200"
           )}
           {...props}
         />
@@ -38,7 +39,7 @@ export const Input = forwardRef<HTMLInputElement, Props>(function Input(
           <div className="absolute right-2 top-1/2 -translate-y-1/2">{rightAdornment}</div>
         ) : null}
       </div>
-      {error ? <p className="mt-1 text-xs text-red-600">{error}</p> : null}
+      {error ? <p className="mt-1 text-xs text-red-600 dark:text-red-400">{error}</p> : null}
     </div>
   );
 });
