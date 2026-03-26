@@ -1,74 +1,70 @@
 import os
-import smtplib
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
-from typing import Iterable
+import requests
 
 
-def _get_smtp_client():
-    # Support both MAIL_* and SMTP_* naming to avoid config mismatch.
-    server = os.getenv("MAIL_SERVER") or os.getenv("SMTP_SERVER") or os.getenv("SMTP_HOST")
-    port = int(os.getenv("MAIL_PORT") or os.getenv("SMTP_PORT") or "587")
-    username = os.getenv("MAIL_USERNAME") or os.getenv("SMTP_USERNAME") or os.getenv("SMTP_USER")
-    password = os.getenv("MAIL_PASSWORD") or os.getenv("SMTP_PASSWORD")
-    use_tls = os.getenv("MAIL_USE_TLS", "true").lower() == "true"
+RESEND_API_URL = "https://api.resend.com/emails"
 
-    if not server or not username or not password:
-        print("[MAIL] Missing SMTP configuration. "
-              f"MAIL_SERVER={server!r}, MAIL_USERNAME set={bool(username)}, MAIL_PASSWORD set={bool(password)}")
-        return None
+
+def _get_resend_config() -> tuple[str | None, str | None, str | None]:
+    api_key = os.getenv("RESEND_API_KEY")
+    from_email = os.getenv("RESEND_FROM_EMAIL") or os.getenv("MAIL_FROM")
+    reply_to = os.getenv("RESEND_REPLY_TO")
+    return api_key, from_email, reply_to
+
+
+def send_email(to: str, subject: str, html: str) -> bool:
+    recipient = to.strip().lower() if isinstance(to, str) else ""
+    if not recipient:
+        print(f"[MAIL] Email not sent. Subject={subject!r}, recipient='' ")
+        return False
+
+    api_key, from_email, reply_to = _get_resend_config()
+    if not api_key or not from_email:
+        print(
+            "[MAIL] Missing Resend configuration. "
+            f"RESEND_API_KEY set={bool(api_key)}, RESEND_FROM_EMAIL={from_email!r}"
+        )
+        print(f"[MAIL] Email not sent. Subject={subject!r}, recipient={recipient}")
+        return False
+
+    payload: dict[str, object] = {
+        "from": from_email,
+        "to": [recipient],
+        "subject": subject,
+        "html": html,
+    }
+    if reply_to:
+        payload["reply_to"] = reply_to
 
     try:
-        client = smtplib.SMTP(server, port, timeout=15)
-        client.ehlo()
-        if use_tls:
-            client.starttls()
-            client.ehlo()
-        client.login(username, password)
-        print("[MAIL] SMTP login successful")
-        return client
-    except Exception as e:
-        # Log the exact reason so it shows up in the backend console.
-        print(f"[MAIL] SMTP connection/login failed: {e}")
-        return None
+        response = requests.post(
+            RESEND_API_URL,
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            json=payload,
+            timeout=15,
+        )
+        if response.ok:
+            response_json = response.json() if response.content else {}
+            print(
+                "[MAIL] Email sent successfully via Resend. "
+                f"Subject={subject!r}, recipient={recipient}, id={response_json.get('id')}"
+            )
+            print("Resend response:", response.text)
+            return True
 
-
-def send_email(subject: str, body: str, recipients: Iterable[str]) -> bool:
-    recipient_list = [r.strip().lower() for r in recipients if isinstance(r, str) and r.strip()]
-    if not recipient_list:
-        print(f"[MAIL] Email not sent. Subject={subject!r}, recipients=[]")
+        print(
+            "[MAIL] Resend API returned error. "
+            f"Subject={subject!r}, recipient={recipient}, status={response.status_code}, body={response.text}"
+        )
+        print("Resend response:", response.text)
         return False
-
-    client = _get_smtp_client()
-    if client is None:
-        print(f"[MAIL] Email not sent. Subject={subject!r}, recipients={recipient_list}")
+    except requests.RequestException as e:
+        print(f"[MAIL] Resend request failed. Subject={subject!r}, recipient={recipient}, error={e}")
         return False
-
-    username = (
-        os.getenv("MAIL_FROM")
-        or os.getenv("MAIL_USERNAME")
-        or os.getenv("SMTP_FROM")
-        or os.getenv("SMTP_USERNAME")
-        or os.getenv("SMTP_USER")
-        or ""
-    )
-
-    msg = MIMEMultipart()
-    msg["From"] = username
-    msg["To"] = ", ".join(recipient_list)
-    msg["Subject"] = subject
-    msg.attach(MIMEText(body, "html"))
-
-    try:
-        client.sendmail(username, recipient_list, msg.as_string())
-        print(f"[MAIL] Email sent successfully. Subject={subject!r}, recipients={recipient_list}")
-        return True
-    except Exception as e:
-        print(f"[MAIL] sendmail failed. Subject={subject!r}, recipients={recipient_list}, error={e}")
+    except ValueError as e:
+        print(f"[MAIL] Resend response parse failed. Subject={subject!r}, recipient={recipient}, error={e}")
         return False
-    finally:
-        try:
-            client.quit()
-        except Exception:
-            pass
 

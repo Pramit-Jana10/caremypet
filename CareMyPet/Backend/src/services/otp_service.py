@@ -41,7 +41,7 @@ def generate_otp(email: str) -> str:
     # TTL index is managed centrally during DB init.
 
     # Send the email
-    subject = "Your CareMyPet Verification Code"
+    subject = "Your OTP"
     body = f"""
     <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 480px; margin: 0 auto;
                 padding: 32px; background: #ffffff; border-radius: 16px;
@@ -66,7 +66,7 @@ def generate_otp(email: str) -> str:
         </p>
     </div>
     """
-    sent = send_email(subject, body, [email])
+    sent = send_email(email, subject, body)
     if not sent:
         # Avoid keeping a valid OTP in DB when delivery failed.
         _otp_collection().delete_one({"_id": insert_result.inserted_id})

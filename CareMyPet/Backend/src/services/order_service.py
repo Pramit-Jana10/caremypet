@@ -159,8 +159,12 @@ def place_order(user_id: str, address: Dict[str, Any], payment_method: str) -> d
       recipients.append(notification_email)
 
     if recipients:
-      sent = send_email(subject, body, recipients)
-      if sent:
+      sent_count = 0
+      for recipient in recipients:
+        if send_email(recipient, subject, body):
+          sent_count += 1
+
+      if sent_count == len(recipients):
         print(f"[ORDER] Receipt email sent for order={order.get('id')} to {recipients}")
       else:
         print(f"[ORDER] Receipt email failed for order={order.get('id')} to {recipients}")

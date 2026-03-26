@@ -12,4 +12,4 @@ def send_feedback_email(*, name: str, email: str, message: str) -> bool:
     <div style=\"border: 1px solid #e5e7eb; border-radius: 10px; padding: 14px; white-space: pre-wrap; color: #111827;\">{message}</div>
   </div>
   """
-  return send_email(subject, body, ["caremypetofficial@gmail.com"])
+  return send_email("caremypetofficial@gmail.com", subject, body)

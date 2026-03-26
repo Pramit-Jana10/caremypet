@@ -120,7 +120,7 @@ def send_password_reset_link(email: str) -> dict:
   </div>
   """
 
-  sent = send_email(subject, body, [normalize_email(email)])
+  sent = send_email(normalize_email(email), subject, body)
   if not sent:
     print(f"[AUTH] Password reset email could not be sent for {email}. Link: {reset_link}")
   return {

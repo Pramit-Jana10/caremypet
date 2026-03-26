@@ -111,11 +111,9 @@ CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,capacitor://loc
 ADMIN_EMAILS=admin@example.com,owner@example.com
 GEMINI_API_KEY=your-gemini-api-key
 FIREBASE_SERVER_KEY=your-firebase-server-key
-MAIL_SERVER=smtp.example.com
-MAIL_PORT=587
-MAIL_USERNAME=your-email@example.com
-MAIL_PASSWORD=your-email-password
-MAIL_USE_TLS=true
+RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxx
+RESEND_FROM_EMAIL=CareMyPet <onboarding@resend.dev>
+RESEND_REPLY_TO=caremypetofficial@gmail.com
 ```
 
 ## Getting Started

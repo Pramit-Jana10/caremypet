@@ -90,7 +90,7 @@ def send_vaccination_reminders(
     push_delivered = False
 
     if email:
-      sent = send_email(subject, body, [email])
+      sent = send_email(email, subject, body)
       if sent:
         email_delivered = True
         print(
