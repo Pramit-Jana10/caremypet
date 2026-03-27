@@ -1,5 +1,4 @@
 import os
-from email.utils import parseaddr
 
 import requests
 
@@ -19,11 +18,6 @@ def _get_brevo_config() -> tuple[str | None, str | None, str | None]:
     return api_key, from_email, reply_to
 
 
-def _parse_sender(from_email: str) -> tuple[str, str]:
-    name, email = parseaddr(from_email)
-    return (name or "CareMyPet"), email or from_email
-
-
 def send_email(to: str, subject: str, html: str) -> bool:
     recipient = to.strip().lower() if isinstance(to, str) else ""
     if not recipient:
@@ -39,13 +33,11 @@ def send_email(to: str, subject: str, html: str) -> bool:
         print(f"[MAIL] Email not sent. Subject={subject!r}, recipient={recipient}")
         return False
 
-    sender_name, sender_email = _parse_sender(from_email)
-
     payload: dict[str, object] = {
-        "sender": {"name": sender_name, "email": sender_email},
+        "sender": {"name": "CareMyPet", "email": from_email},
         "to": [{"email": recipient}],
         "subject": subject,
-        "html": html,
+        "htmlContent": html,
     }
     if reply_to:
         payload["replyTo"] = {"email": reply_to}
