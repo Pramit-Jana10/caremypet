@@ -277,10 +277,10 @@ function LibraryInner() {
                         <li
                           key={lesson.id}
                           className={
-                            "flex items-start gap-3 rounded-xl px-3 py-2 text-sm " +
+                            "flex items-start gap-3 rounded-xl border px-3 py-2 text-sm transition-colors " +
                             (selectedLesson?.id === lesson.id
-                              ? "bg-brand-50 dark:bg-brand-900/30"
-                              : "bg-ink-50 dark:bg-ink-800/70")
+                              ? "border-brand-200 bg-brand-50 dark:border-brand-700/50 dark:bg-brand-900/35"
+                              : "border-ink-200 bg-ink-50 dark:border-ink-300/60 dark:bg-ink-100")
                           }
                         >
                           <button
@@ -295,7 +295,7 @@ function LibraryInner() {
                               "mt-0.5 inline-flex h-5 w-5 items-center justify-center rounded-full border text-[10px] " +
                               (done
                                 ? "border-brand-500 bg-brand-500 text-white"
-                                : "border-ink-300 bg-white text-ink-500")
+                                : "border-ink-300 bg-white text-ink-500 dark:border-ink-400 dark:bg-ink-50 dark:text-ink-700")
                             }
                           >
                             {done ? "✓" : lesson.order}
@@ -326,7 +326,7 @@ function LibraryInner() {
                         href={selectedLesson.videoUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="mt-3 inline-flex rounded-lg bg-ink-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-ink-800"
+                        className="mt-3 inline-flex rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-brand-700"
                       >
                         Watch lesson video
                       </a>

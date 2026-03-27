@@ -216,7 +216,7 @@ function getUrgencyStyle(daysRemaining: number): {
 } {
   if (daysRemaining < 0) {
     return {
-      card: "bg-gradient-to-r from-red-50 to-rose-50 border-red-200",
+      card: "bg-gradient-to-r from-red-50 to-rose-50 border-red-200 dark:from-red-950/45 dark:to-rose-950/35 dark:border-red-800/60",
       chip: "bg-red-600 text-white",
       ring: "ring-2 ring-red-200",
       title: "Overdue",
@@ -226,7 +226,7 @@ function getUrgencyStyle(daysRemaining: number): {
 
   if (daysRemaining === 0) {
     return {
-      card: "bg-gradient-to-r from-red-100 to-orange-100 border-red-300",
+      card: "bg-gradient-to-r from-red-100 to-orange-100 border-red-300 dark:from-red-900/45 dark:to-orange-900/35 dark:border-red-700/70",
       chip: "bg-red-700 text-white animate-pulse",
       ring: "ring-2 ring-red-300",
       title: "Due today",
@@ -236,7 +236,7 @@ function getUrgencyStyle(daysRemaining: number): {
 
   if (daysRemaining <= 3) {
     return {
-      card: "bg-gradient-to-r from-orange-100 to-amber-100 border-orange-300",
+      card: "bg-gradient-to-r from-orange-100 to-amber-100 border-orange-300 dark:from-orange-900/45 dark:to-amber-900/35 dark:border-orange-700/70",
       chip: "bg-orange-600 text-white",
       ring: "ring-2 ring-orange-200",
       title: "Due soon",
@@ -245,7 +245,7 @@ function getUrgencyStyle(daysRemaining: number): {
   }
 
   return {
-    card: "bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-200",
+    card: "bg-gradient-to-r from-emerald-50 to-teal-50 border-emerald-200 dark:from-emerald-900/40 dark:to-teal-900/30 dark:border-emerald-700/60",
     chip: "bg-emerald-600 text-white",
     ring: "",
     title: "Scheduled",
@@ -777,7 +777,7 @@ function VaccinationsInner() {
                 <div
                   key={v.id}
                   id={`vaccine-item-${v.id}`}
-                  className={`flex items-center justify-between rounded-xl border px-3 py-3 transition-all ${urgency.card} ${urgency.ring} ${
+                  className={`flex flex-col gap-3 rounded-xl border px-3 py-3 transition-all sm:flex-row sm:items-center sm:justify-between ${urgency.card} ${urgency.ring} ${
                     highlightedVaccineId === v.id ? "ring-4 ring-brand-300 shadow-soft" : ""
                   }`}
                 >
@@ -788,14 +788,14 @@ function VaccinationsInner() {
                       {urgency.badgeText}
                     </span>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Button size="sm" variant="outline" onClick={() => startEditVaccine(v)}>
+                  <div className="flex w-full flex-wrap items-center gap-2 sm:w-auto sm:justify-end">
+                    <Button size="sm" variant="outline" className="min-w-[84px]" onClick={() => startEditVaccine(v)}>
                       Edit
                     </Button>
-                    <Button size="sm" variant="danger" onClick={() => void removeVaccine(v.id)}>
+                    <Button size="sm" variant="danger" className="min-w-[84px]" onClick={() => void removeVaccine(v.id)}>
                       Remove
                     </Button>
-                    <Button size="sm" variant="secondary" onClick={() => void markDone(v.id)}>
+                    <Button size="sm" variant="secondary" className="min-w-[96px]" onClick={() => void markDone(v.id)}>
                       Mark done
                     </Button>
                   </div>
