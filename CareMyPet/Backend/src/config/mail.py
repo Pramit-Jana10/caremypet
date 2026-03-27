@@ -1,15 +1,27 @@
 import os
+from email.utils import parseaddr
+
 import requests
 
 
-RESEND_API_URL = "https://api.resend.com/emails"
+BREVO_API_URL = "https://api.brevo.com/v3/smtp/email"
 
 
-def _get_resend_config() -> tuple[str | None, str | None, str | None]:
-    api_key = os.getenv("RESEND_API_KEY")
-    from_email = os.getenv("RESEND_FROM_EMAIL") or os.getenv("MAIL_FROM")
-    reply_to = os.getenv("RESEND_REPLY_TO")
+def _get_brevo_config() -> tuple[str | None, str | None, str | None]:
+    # Keep RESEND_* fallbacks so existing deployments do not break during migration.
+    api_key = os.getenv("BREVO_API_KEY") or os.getenv("RESEND_API_KEY")
+    from_email = (
+        os.getenv("BREVO_FROM_EMAIL")
+        or os.getenv("RESEND_FROM_EMAIL")
+        or os.getenv("MAIL_FROM")
+    )
+    reply_to = os.getenv("BREVO_REPLY_TO") or os.getenv("RESEND_REPLY_TO")
     return api_key, from_email, reply_to
+
+
+def _parse_sender(from_email: str) -> tuple[str, str]:
+    name, email = parseaddr(from_email)
+    return (name or "CareMyPet"), email or from_email
 
 
 def send_email(to: str, subject: str, html: str) -> bool:
@@ -18,29 +30,31 @@ def send_email(to: str, subject: str, html: str) -> bool:
         print(f"[MAIL] Email not sent. Subject={subject!r}, recipient='' ")
         return False
 
-    api_key, from_email, reply_to = _get_resend_config()
+    api_key, from_email, reply_to = _get_brevo_config()
     if not api_key or not from_email:
         print(
-            "[MAIL] Missing Resend configuration. "
-            f"RESEND_API_KEY set={bool(api_key)}, RESEND_FROM_EMAIL={from_email!r}"
+            "[MAIL] Missing Brevo configuration. "
+            f"BREVO_API_KEY set={bool(api_key)}, BREVO_FROM_EMAIL={from_email!r}"
         )
         print(f"[MAIL] Email not sent. Subject={subject!r}, recipient={recipient}")
         return False
 
+    sender_name, sender_email = _parse_sender(from_email)
+
     payload: dict[str, object] = {
-        "from": from_email,
-        "to": [recipient],
+        "sender": {"name": sender_name, "email": sender_email},
+        "to": [{"email": recipient}],
         "subject": subject,
         "html": html,
     }
     if reply_to:
-        payload["reply_to"] = reply_to
+        payload["replyTo"] = {"email": reply_to}
 
     try:
         response = requests.post(
-            RESEND_API_URL,
+            BREVO_API_URL,
             headers={
-                "Authorization": f"Bearer {api_key}",
+                "api-key": api_key,
                 "Content-Type": "application/json",
             },
             json=payload,
@@ -49,22 +63,22 @@ def send_email(to: str, subject: str, html: str) -> bool:
         if response.ok:
             response_json = response.json() if response.content else {}
             print(
-                "[MAIL] Email sent successfully via Resend. "
-                f"Subject={subject!r}, recipient={recipient}, id={response_json.get('id')}"
+                "[MAIL] Email sent successfully via Brevo. "
+                f"Subject={subject!r}, recipient={recipient}, id={response_json.get('messageId')}"
             )
-            print("Resend response:", response.text)
+            print("Brevo response:", response.text)
             return True
 
         print(
-            "[MAIL] Resend API returned error. "
+            "[MAIL] Brevo API returned error. "
             f"Subject={subject!r}, recipient={recipient}, status={response.status_code}, body={response.text}"
         )
-        print("Resend response:", response.text)
+        print("Brevo response:", response.text)
         return False
     except requests.RequestException as e:
-        print(f"[MAIL] Resend request failed. Subject={subject!r}, recipient={recipient}, error={e}")
+        print(f"[MAIL] Brevo request failed. Subject={subject!r}, recipient={recipient}, error={e}")
         return False
     except ValueError as e:
-        print(f"[MAIL] Resend response parse failed. Subject={subject!r}, recipient={recipient}, error={e}")
+        print(f"[MAIL] Brevo response parse failed. Subject={subject!r}, recipient={recipient}, error={e}")
         return False
 
